@@ -21,10 +21,10 @@ services:
       - uploads_data:/app/public/uploads
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8000/"]
-      interval: 30s
+      interval: 15s
       timeout: 10s
-      retries: 3
-      start_period: 15s
+      retries: 5
+      start_period: 40s
 
   frontend:
     build:

@@ -2,7 +2,7 @@
 FROM node:20-bookworm-slim
 
 # Dependencias útiles (openssl para libs/ JWT; tzdata para zona horaria)
-RUN apt-get update && apt-get install -y openssl tzdata && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl tzdata wget && rm -rf /var/lib/apt/lists/*
 ENV TZ=America/Mexico_City
 
 WORKDIR /app
