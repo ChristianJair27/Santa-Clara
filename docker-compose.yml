@@ -1,0 +1,45 @@
+services:
+
+  backend:
+    build:
+      context: ./Ordenar505-Backend-main
+      dockerfile: Dockerfile
+    container_name: santa-clara-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      # Set these in Coolify → Environment Variables (or in a .env file locally)
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    volumes:
+      - uploads_data:/app/public/uploads
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ./Ordenar505-Frontend-main
+      dockerfile: Dockerfile
+      args:
+        # Coolify passes VITE_BACKEND_URL as a build-arg
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8000}
+    container_name: santa-clara-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  uploads_data:
