@@ -34,8 +34,8 @@ services:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8000}
     container_name: santa-clara-frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       backend:
         condition: service_healthy
