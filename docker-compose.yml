@@ -31,7 +31,6 @@ services:
       context: ./Ordenar505-Frontend-main
       dockerfile: Dockerfile
       args:
-        # Coolify passes VITE_BACKEND_URL as a build-arg
         VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8000}
     container_name: santa-clara-frontend
     restart: unless-stopped
@@ -40,6 +39,13 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.santa-clara.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.santa-clara.entrypoints=https"
+      - "traefik.http.routers.santa-clara.tls=true"
+      - "traefik.http.routers.santa-clara.tls.certresolver=letsencrypt"
+      - "traefik.http.services.santa-clara.loadbalancer.server.port=80"
 
 volumes:
   uploads_data:
