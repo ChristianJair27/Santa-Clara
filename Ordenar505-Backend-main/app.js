@@ -32,32 +32,32 @@ const kioskAuthRoutes = require("./routes/kioskAuthRoutes");
 const server = http.createServer(app);
 
 // Inicializar Socket.IO
+const ALLOWED_ORIGINS = [
+  "http://192.168.1.11:5173",
+  "http://192.168.1.14:5173",
+  "http://192.168.1.85:5173",
+  "http://192.168.1.78:5173",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://187.200.118.87:5173",
+  // dominios lapeñadesantiago
+  "https://santa.xn--lapeadesantiago-1qb.com",
+  "http://santa.xn--lapeadesantiago-1qb.com",
+  "https://madero.xn--lapeadesantiago-1qb.com",
+  // dominios tacoscanastaqro
+  "https://santa.tacoscanastaqro.com",
+  "http://santa.tacoscanastaqro.com",
+  "https://clara.tacoscanastaqro.com",
+  "http://clara.tacoscanastaqro.com",
+];
+
 const io = new Server(server, {
   cors: {
     origin: function (origin, callback) {
-      const allowedOrigins = [
-        "http://192.168.1.11:5173",
-        "http://192.168.1.14:5173",
-        "http://192.168.1.85:5173",
-        "http://192.168.1.78:5173",
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-        "http://187.200.118.87:5173",
-        "http://pos.xn--lapeadesantiago-1qb.com:5173",
-        "https://xn--lapeadesantiago-1qb.com",
-        "http://app.xn--lapeadesantiago-1qb.com:5173",
-        "https://app.xn--lapeadesantiago-1qb.com:5173",
-        "https://app.xn--lapeadesantiago-1qb.com",
-        "https://app.xn--lapeadesantiago-1qb.com:80",
-        "http://app.xn--lapeadesantiago-1qb.com",
-        "https://madero.xn--lapeadesantiago-1qb.com",
-        "http://app.xn--lapeadesantiago-1qb.com",
-        "https://santa.xn--lapeadesantiago-1qb.com",
-        "http://santa.xn--lapeadesantiago-1qb.com"
-      ];
+      const allowedOrigins = ALLOWED_ORIGINS;
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -91,30 +91,7 @@ io.on("connection", (socket) => {
 app.use(cookieParser());
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = [
-      "http://192.168.1.11:5173",
-      "http://192.168.1.14:5173",
-      "http://192.168.1.85:5173",
-      "http://192.168.1.78:5173",
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:3000",
-      "http://127.0.0.1:5173",
-      "http://127.0.0.1:5174",
-      "http://187.200.118.87:5173",
-      "http://pos.xn--lapeadesantiago-1qb.com:5173",
-      "https://xn--lapeadesantiago-1qb.com",
-      "http://app.xn--lapeadesantiago-1qb.com:5173",
-      "https://app.xn--lapeadesantiago-1qb.com:5173",
-      "https://app.xn--lapeadesantiago-1qb.com",
-      "https://app.xn--lapeadesantiago-1qb.com:80",
-      "http://app.xn--lapeadesantiago-1qb.com",
-      "https://madero.xn--lapeadesantiago-1qb.com",
-      "http://app.xn--lapeadesantiago-1qb.com",
-      "https://santa.xn--lapeadesantiago-1qb.com",
-      "http://santa.xn--lapeadesantiago-1qb.com"
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("CORS not allowed for this origin: " + origin));
@@ -126,12 +103,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-// DEBUG: log every request that reaches Express
-app.use((req, res, next) => {
-  console.log(`>>> [EXPRESS] ${req.method} ${req.path} body:`, JSON.stringify(req.body));
-  next();
-});
 
 // Root
 app.get("/", (req, res) => {
