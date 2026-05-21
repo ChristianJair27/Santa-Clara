@@ -20,7 +20,10 @@ router.get("/kiosk/waiters", async (req, res, next) => {
 // Login 1-tap (sin PIN)
 router.post("/kiosk/waiter-login", async (req, res, next) => {
   try {
+    console.log("[kiosk-login] body:", JSON.stringify(req.body));
+    console.log("[kiosk-login] jwtSecret set:", !!config.jwtSecret);
     const { user_id } = req.body;
+    console.log("[kiosk-login] user_id:", user_id, typeof user_id);
 
     const [rows] = await db.execute(
       `SELECT id, name, role, kiosk_enabled
@@ -30,6 +33,7 @@ router.post("/kiosk/waiter-login", async (req, res, next) => {
       [user_id]
     );
     const u = rows[0];
+    console.log("[kiosk-login] user found:", JSON.stringify(u));
     if (!u || !u.kiosk_enabled) {
       return res.status(403).json({ success:false, message:"No permitido" });
     }
@@ -40,14 +44,17 @@ router.post("/kiosk/waiter-login", async (req, res, next) => {
       { expiresIn: "12h" }
     );
 
+    console.log("[kiosk-login] token generated OK");
+
     // 👇 Update tolerante
     try {
       await db.execute("UPDATE users SET last_login = NOW() WHERE id = ?", [u.id]);
     } catch (e) {
-      if (e && e.code !== "ER_BAD_FIELD_ERROR") throw e; // si es otra cosa, la propagas
-      // si es "columna desconocida", lo ignoramos
+      console.log("[kiosk-login] UPDATE error code:", e?.code, e?.message);
+      if (e && e.code !== "ER_BAD_FIELD_ERROR") throw e;
     }
 
+    console.log("[kiosk-login] sending success response");
     res.json({ success:true, data:{ token, user:{ id:u.id, name:u.name, role:u.role } }});
   } catch (e) { next(e); }
 });
