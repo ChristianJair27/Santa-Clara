@@ -8,10 +8,16 @@ services:
     restart: unless-stopped
     expose:
       - "8000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.santa-clara-api.rule=Host(`${SERVICE_FQDN_BACKEND}`)"
+      - "traefik.http.routers.santa-clara-api.entrypoints=https"
+      - "traefik.http.routers.santa-clara-api.tls=true"
+      - "traefik.http.routers.santa-clara-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.santa-clara-api.loadbalancer.server.port=8000"
     environment:
       NODE_ENV: production
       PORT: 8000
-      # Set these in Coolify → Environment Variables (or in a .env file locally)
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USER}
@@ -41,7 +47,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.santa-clara.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.santa-clara.rule=Host(`${SERVICE_FQDN_FRONTEND}`)"
       - "traefik.http.routers.santa-clara.entrypoints=https"
       - "traefik.http.routers.santa-clara.tls=true"
       - "traefik.http.routers.santa-clara.tls.certresolver=letsencrypt"
