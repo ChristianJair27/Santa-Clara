@@ -127,6 +127,12 @@ app.use(cors({
 
 app.use(express.json());
 
+// DEBUG: log every request that reaches Express
+app.use((req, res, next) => {
+  console.log(`>>> [EXPRESS] ${req.method} ${req.path} body:`, JSON.stringify(req.body));
+  next();
+});
+
 // Root
 app.get("/", (req, res) => {
   res.json({
