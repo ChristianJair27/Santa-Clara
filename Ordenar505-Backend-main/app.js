@@ -54,7 +54,9 @@ const io = new Server(server, {
         "https://app.xn--lapeadesantiago-1qb.com:80",
         "http://app.xn--lapeadesantiago-1qb.com",
         "https://madero.xn--lapeadesantiago-1qb.com",
-        "http://app.xn--lapeadesantiago-1qb.com"
+        "http://app.xn--lapeadesantiago-1qb.com",
+        "https://santa.xn--lapeadesantiago-1qb.com",
+        "http://santa.xn--lapeadesantiago-1qb.com"
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -108,7 +110,9 @@ app.use(cors({
       "https://app.xn--lapeadesantiago-1qb.com:80",
       "http://app.xn--lapeadesantiago-1qb.com",
       "https://madero.xn--lapeadesantiago-1qb.com",
-      "http://app.xn--lapeadesantiago-1qb.com"
+      "http://app.xn--lapeadesantiago-1qb.com",
+      "https://santa.xn--lapeadesantiago-1qb.com",
+      "http://santa.xn--lapeadesantiago-1qb.com"
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
