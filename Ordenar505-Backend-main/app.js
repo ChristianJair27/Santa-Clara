@@ -87,9 +87,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// Middlewares
-app.use(cookieParser());
-app.use(cors({
+// CORS options reusables
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
@@ -100,7 +99,13 @@ app.use(cors({
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-}));
+};
+
+// Middlewares
+app.use(cookieParser());
+app.use(cors(corsOptions));
+// Preflight explícito para todas las rutas (requerido por Traefik/proxies)
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
